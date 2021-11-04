@@ -7,15 +7,15 @@ const Task = mongoose.model('Task', {
     created: Date,
 	isInProgress: {
 		status: Boolean,
-		date: Date,
+		startDate: Date,
 	},
 	isPaused: {
 		status: Boolean,
-		date: Date,
+		pausedDate: Date,
 	},
 	isDone: {
 		status: Boolean,
-		date: Date,
+		doneDate: Date,
 	},
 });
 
