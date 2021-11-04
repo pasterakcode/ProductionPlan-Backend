@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const apiTasks = require('../actions/apiTasks');
+const taskActions = require('../actions/apiTasks');
 
-router.get('/', apiTasks.homepage);
+router.get('/', taskActions.saveTask);
 
 module.exports = router;
