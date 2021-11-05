@@ -1,23 +1,48 @@
 const mongoose = require('mongoose');
 
-const Task = mongoose.model('Task', {
-	item: String,
-	planned: Number,
-	produced: Number,
-    created: Date,
+const TaskSchema = new mongoose.Schema({
+	item: {
+		type: String,
+		required: true,
+	},
+	planned: {
+		type: String,
+		required: true,
+	},
+	produced: {
+		type: Number,
+		default: 0,
+		required: true,
+	},
+	createDate: {
+		type: Date,
+		default: Date.now,
+		required: true,
+	},
+	completedDate: {
+		type: Date,
+		required: false,
+	},
 	isInProgress: {
-		status: Boolean,
-		startDate: Date,
+		type: Boolean,
+		default: true,
+		required: true,
 	},
 	isPaused: {
-		status: Boolean,
-		pausedDate: Date,
+		type: Boolean,
+		default: false,
+		required: true,
 	},
 	isDone: {
-		status: Boolean,
-		doneDate: Date,
+		type: Boolean,
+		default: false,
+		required: true,
 	},
+	reportHistory: {
+		type: Object,
+		required: false,
+	}
 });
+const Task = mongoose.model('Task', TaskSchema);
 
 module.exports = Task;
-

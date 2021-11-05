@@ -20,24 +20,32 @@ module.exports = {
 			return res.status(404).json({ message: err.message });
 		}
 	},
+	async getDoneTasks(req, res) {
+		// pobieranie zakończonych zleceń
+		try {
+			const tasks = await Task.find({ isDone: true });
+			res.status(200).json(tasks);
+		} catch (err) {
+			res.status(404).json({ message: err.message });
+		}
+	},
+	async getPausedTasks(req, res) {
+		// pobieranie wstrzymanych zleceń
+		try {
+			const tasks = await Task.find({});
+			res.status(200).json(tasks);
+		} catch (err) {
+			res.status(404).json({ message: err.message });
+		}
+	},
 	async saveTask(req, res) {
 		// zapisywanie zadania
 		const item = req.body.item;
 		const planned = req.body.planned;
-		const produced = 0;
-		const created = new Date();
-		const isInProgress = { status: false };
-		const isPaused = { status: false };
-		const isDone = { status: false };
 		try {
 			const newTask = new Task({
 				item,
 				planned,
-				produced,
-				created,
-				isInProgress,
-				isPaused,
-				isDone,
 			});
 			await newTask.save();
 			res.status(201).json(newTask);
@@ -65,15 +73,16 @@ module.exports = {
 		try {
 			const task = await Task.findOne({ _id: id });
 			task.produced = task.produced + produced;
-			if (!task.isInProgress.status) {
-				task.isInProgress = { status: true, startDate: new Date() };
+			if (task.reportHistory) {
+				task.reportHistory =
+					[...task.reportHistory, { count: produced, date: new Date }];
+			} else {
+				task.reportHistory = [{ count: produced, date: new Date }];
 			}
 			if (task.planned <= task.produced) {
-				task.isInProgress = {
-					status: false,
-					startDate: task.isInProgress.startDate || new Date(),
-				};
-				task.isDone = { status: true, doneDate: new Date() };
+				task.isInProgress = false;
+				task.isDone = true;
+				task.completedDate = Date.now();
 			}
 			await task.save();
 			res.status(201).json(task);
@@ -82,12 +91,12 @@ module.exports = {
 		}
 	},
 	async pauseTask(req, res) {
-		// raportowanie produkcji
+		// wstrzymywanie produkcji
 		const id = req.params.id;
 		try {
 			const task = await Task.findOne({ _id: id });
-			task.isInProgress = { status: false };
-			task.isPaused = { status: true, pausedDate: new Date() };
+			task.isInProgress = false;
+			task.isPaused = true;
 			await task.save();
 			res.status(201).json(task);
 		} catch (err) {
