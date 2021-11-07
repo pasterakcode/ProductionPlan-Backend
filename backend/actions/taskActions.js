@@ -1,4 +1,4 @@
-const Task = require('../db/models/task');
+const Task = require('../db/models/taskModel');
 
 module.exports = {
 	async getAllTasks(req, res) {
@@ -20,6 +20,17 @@ module.exports = {
 			return res.status(404).json({ message: err.message });
 		}
 	},
+	async getProductionLines(req, res) {
+		// pobieranie tablicy z aktualnymi liniami produkcyjnymi
+		try {
+			const tasks = await Task.find({});
+			const productionLines = tasks.map(x => x.productionLine);
+			const uniqueProductionLines = [...new Set(productionLines)];
+			res.status(200).json(uniqueProductionLines);
+		} catch (err) {
+			res.status(500).json({ message: err.message });
+		}
+	},
 	async getDoneTasks(req, res) {
 		// pobieranie zakończonych zleceń
 		const productionLine = req.params.productionLine;
@@ -37,20 +48,23 @@ module.exports = {
 		// pobieranie wstrzymanych zleceń
 		const productionLine = req.params.productionLine;
 		try {
-			const tasks = await Task.find({ 'isPaused.status': true, productionLine: productionLine });
+			const tasks = await Task.find({
+				'isPaused.status': true,
+				productionLine: productionLine,
+			});
 			res.status(200).json(tasks);
 		} catch (err) {
 			res.status(404).json({ message: err.message });
 		}
 	},
 	async getPlannedTasks(req, res) {
-		// pobieranie wstrzymanych zleceń
+		// pobieranie planowanych zleceń (nierozpoczętych + rozpoczętych)
 		const productionLine = req.params.productionLine;
 		try {
 			const tasks = await Task.find({
 				'isPaused.status': false,
 				'isDone.status': false,
-				productionLine: productionLine
+				productionLine: productionLine,
 			});
 			res.status(200).json(tasks);
 		} catch (err) {
@@ -71,7 +85,7 @@ module.exports = {
 		};
 		try {
 			const newTask = new Task({
-				productionLine,
+				productionLine: productionLine.toUpperCase(),
 				item,
 				planned,
 				reportHistory: [operationHistory],
@@ -104,8 +118,8 @@ module.exports = {
 			res.status(400).json({ message: err.message });
 		}
 	},
-	async updateTask(req, res) {
-		// edycja zadań
+	async editTask(req, res) {
+		// edycja ilości planowanej do wykonania
 		const id = req.params.id;
 		const planned = req.body.planned;
 		const user = req.body.user;

@@ -1,7 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const apiUsers = require('../actions/apiUsers');
+const userActions = require('../actions/userActions');
 
-router.get('/', apiUsers);
+// pobranie wszystkich użytkowników 
+router.get('/users', userActions.getUsers);
+// pobieranie jednego użytownika / logowanie
+router.get('/users/login', userActions.loginUser);
+// dodawanie nowego użytkownika
+router.post('/users', userActions.saveUser);
+// kasowanie użytkownika
+router.delete('/users/:id', userActions.deleteUser)
+
 
 module.exports = router;

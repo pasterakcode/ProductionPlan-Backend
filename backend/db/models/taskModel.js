@@ -18,11 +18,6 @@ const TaskSchema = new mongoose.Schema({
 		default: 0,
 		required: true,
 	},
-	// createDate: {
-	// 	type: Date,
-	// 	default: Date.now,
-	// 	required: true,
-	// },
 	isInProgress: {
 		status: { type: Boolean, default: false, required: true },
 		date: { type: Date, required: false },
