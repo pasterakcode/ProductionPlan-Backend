@@ -1,6 +1,7 @@
 # productionPlan
 
-Backend of application to production plan menagment.
+Backend of application to production plan management.
+
 Tech: Node.js, Express, MongoDB
 
 Frontend is comming .... :)
