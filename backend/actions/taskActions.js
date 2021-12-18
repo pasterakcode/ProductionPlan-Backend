@@ -2,7 +2,7 @@ const Task = require('../db/models/taskModel');
 
 module.exports = {
 	async getAllTasks(req, res) {
-		// pobieranie zadań
+		// download tasks
 		try {
 			const tasks = await Task.find({});
 			res.status(200).json(tasks);
@@ -11,7 +11,7 @@ module.exports = {
 		}
 	},
 	async getTask(req, res) {
-		// pobieranie zadania
+		// download task
 		const id = req.params.id;
 		try {
 			const task = await Task.findOne({ _id: id });
@@ -21,7 +21,7 @@ module.exports = {
 		}
 	},
 	async getProductionLines(req, res) {
-		// pobieranie tablicy z aktualnymi liniami produkcyjnymi
+		// download array with currently production lines
 		try {
 			const tasks = await Task.find({});
 			const productionLines = tasks.map(x => x.productionLine);
@@ -32,7 +32,7 @@ module.exports = {
 		}
 	},
 	async getDoneTasks(req, res) {
-		// pobieranie zakończonych zleceń
+		// download done tasks
 		const productionLine = req.params.productionLine;
 		try {
 			const tasks = await Task.find({
@@ -45,7 +45,7 @@ module.exports = {
 		}
 	},
 	async getPausedTasks(req, res) {
-		// pobieranie wstrzymanych zleceń
+		// download paused tasks
 		const productionLine = req.params.productionLine;
 		try {
 			const tasks = await Task.find({
@@ -58,7 +58,7 @@ module.exports = {
 		}
 	},
 	async getPlannedTasks(req, res) {
-		// pobieranie planowanych zleceń (nierozpoczętych + rozpoczętych)
+		// download scheduled tasks
 		const productionLine = req.params.productionLine;
 		try {
 			const tasks = await Task.find({
@@ -72,7 +72,7 @@ module.exports = {
 		}
 	},
 	async saveTask(req, res) {
-		// zapisywanie zadania
+		// save new task
 		const productionLine = req.body.productionLine;
 		const item = req.body.item;
 		const planned = req.body.planned;
@@ -97,7 +97,7 @@ module.exports = {
 		}
 	},
 	async activeTask(req, res) {
-		// edycja zadań
+		// active task
 		const id = req.params.id;
 		const user = req.body.user;
 		const operationHistory = {
@@ -119,7 +119,7 @@ module.exports = {
 		}
 	},
 	async editTask(req, res) {
-		// edycja ilości planowanej do wykonania
+		// edit: change planned qty of task
 		const id = req.params.id;
 		const planned = req.body.planned;
 		const user = req.body.user;
@@ -143,7 +143,7 @@ module.exports = {
 		}
 	},
 	async reportTask(req, res) {
-		// raportowanie produkcji
+		// production reporting
 		const id = req.params.id;
 		const produced = req.body.produced;
 		const user = req.body.user;
@@ -173,7 +173,7 @@ module.exports = {
 		}
 	},
 	async pauseTask(req, res) {
-		// wstrzymywanie produkcji
+		// pause task
 		const id = req.params.id;
 		const reason = req.body.reason;
 		const user = req.body.user;
@@ -200,7 +200,7 @@ module.exports = {
 		}
 	},
 	async resumeTask(req, res) {
-		// wstrzymywanie produkcji
+		// resume task
 		const id = req.params.id;
 		const comment = req.body.comment;
 		const user = req.body.user;
@@ -226,7 +226,7 @@ module.exports = {
 		}
 	},
 	async deleteTask(req, res) {
-		// usuwanien zadań
+		// delete task
 		const id = req.params.id;
 		try {
 			await Task.deleteOne({ _id: id });
