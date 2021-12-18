@@ -1,7 +1,6 @@
 const User = require('../db/models/userModel');
 
 module.exports = {
-	// router.delete('/users/:id', userActions.deleteUser)
 	async getUsers(req, res) {
 		try {
 			const users = await User.find({});
